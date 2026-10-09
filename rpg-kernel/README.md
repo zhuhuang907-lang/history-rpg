@@ -167,3 +167,12 @@ data/adapters/          外部框架 manifest（免改代码接入）
   同时最多 2 个请求，要求 JSON 的调用开 JSON 模式并自动修复，抽取类结果短期缓存。用量与熔断状态见 `/api/health`。
 - **Wikidata 护栏**：查询串行且间隔 1.2 秒，429/5xx 按 Retry-After 退避，连续失败 3 次暂停 5 分钟、改用本地人物库，成功结果永久缓存。
 - 修正：灾情现在真的影响收成与粮价（原先永远是「无」）；新增钱赋实收与军饷，钱不再只出不进。
+
+## 免安装版（Windows）
+
+仓库根目录的 `历史模拟RPG-Windows.zip` 是打好的免安装版：解压后双击 `历史模拟RPG.exe` 即可，电脑上不用装 Node。
+它内置 Node 官方 win-x64 运行环境（构建时校验 SHA256），启动后在本机 8787 端口开服务并自动打开浏览器；
+再次双击只会打开浏览器，不会重复启动。存档、设置都在 exe 旁边的 `data` 文件夹，升级时把它拷到新版里即可。
+
+重新打包：在 Linux/macOS 上运行 `rpg-kernel/tools/build-windows.sh`（需 Node 22、curl、python3）。
+macOS / Linux 直接游玩：装好 Node 22 后在 `rpg-kernel` 目录运行 `node server.js`，浏览器打开 http://127.0.0.1:8787 。
