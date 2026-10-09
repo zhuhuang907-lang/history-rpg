@@ -1,0 +1,101 @@
+{
+  "identityModule": "official",
+  "protagonist": {
+    "name": "叶知微",
+    "age": 43,
+    "birthYear": 1026,
+    "role": "通判常州军州事",
+    "disposition": "法要严但必须刚正；穷凶极恶者依律顶格，事实含糊者从轻；对受害者和有困难者暗中接济"
+  },
+  "clock": {
+    "yearLabel": "熙宁元年",
+    "gregorianYear": 1068,
+    "month": 9,
+    "day": 12,
+    "season": "秋",
+    "maxAdvancePerTurn": 5
+  },
+  "location": {
+    "full": "两浙路 常州 晋陵县 常州州衙",
+    "polity": "宋（两浙路）",
+    "controller": "宋廷；知常州事蒋文举"
+  },
+  "resources": {
+    "官职": "通判常州军州事（通判掌监州、得专达於朝廷）",
+    "本官阶": "大理寺丞",
+    "可用人力": "州衙公吏、手力；调兵需知州联署",
+    "私人随行": "仆役毛九成、郭春生（雇契五年）"
+  },
+  "npcs": [
+    {
+      "name": "蒋文举",
+      "age": 56,
+      "nativePlace": "未登记（需补）",
+      "role": "知常州事",
+      "background": "叶知微的直接上官；本州最高长官，签署权在他手里。",
+      "tie": "叶知微的上官",
+      "goal": "任内上供无亏、无民变、磨勘顺利",
+      "risk": "保命田若扰及形势户，他自己要先担责",
+      "defectionCondition": "一旦奏疏牵连到他或上供账目，他会立刻切割并把责任推给提议者",
+      "source": "fictional"
+    },
+    {
+      "name": "叶明达",
+      "age": 21,
+      "nativePlace": "潭州湘潭县",
+      "role": "叶知微长子",
+      "background": "拟回潭州应熙宁二年秋解试；代表家族在故乡的科名延续。",
+      "tie": "叶知微长子",
+      "goal": "取得解试资格并建立自己的同年网络",
+      "risk": "父亲在常州的争议会污染他的乡评",
+      "defectionCondition": "若父亲被论奏降黜，他可能改走荫补或经商一途",
+      "source": "fictional"
+    },
+    {
+      "name": "廖氏",
+      "age": 41,
+      "nativePlace": "潭州",
+      "role": "叶知微正妻",
+      "background": "廖文伯之女。主持家计，随任常州。",
+      "tie": "叶知微正妻",
+      "goal": "维持家声与子女婚宦前景",
+      "risk": "丈夫推行保命田得罪形势户，祸及家族",
+      "defectionCondition": "家中生计较紧时她会压丈夫收敛",
+      "source": "fictional"
+    },
+    {
+      "name": "吕大防",
+      "age": 41,
+      "nativePlace": "京兆蓝田",
+      "role": "叶知微同年；濮议后外放，后通判淄州、前任监察御史里行",
+      "background": "真实历史人物（1027—1097）。与叶知微为同年，叶的改革主张由其转达。",
+      "tie": "同年；受托转达改革主张",
+      "goal": "在神宗初政的朝局中自保并累积言路资望",
+      "risk": "替同年背书等于替他担责",
+      "defectionCondition": "若保命田被台谏指为新法流弊，他会撇清与自己的关系",
+      "source": "historical"
+    },
+    {
+      "name": "范纯仁",
+      "age": 41,
+      "nativePlace": "苏州吴县",
+      "role": "叶知微同年；同知谏院",
+      "background": "真实历史人物（1027—1101）。濮议后曾被外放。",
+      "tie": "同年；受托转达改革主张",
+      "goal": "不使新法骤更扰民，同时不彻底倒向反对面",
+      "risk": "被认作某一派，两头不讨好",
+      "defectionCondition": "若主张被包装成激进新法，他会收回支持",
+      "source": "historical"
+    }
+  ],
+  "threads": [
+    { "id": "t1", "title": "常州上供米账目对不上", "status": "open", "lastTouchedTurn": 0, "note": "差额尚缺确证，疑似历年积欠与转运环节损耗混同" },
+    { "id": "t2", "title": "常州秋租拖欠与形势户抗不输纳", "status": "open", "lastTouchedTurn": 0, "note": "本轮秋时限将近" },
+    { "id": "t3", "title": "保命田试行（每户五亩永业，不得买卖抵押、不没官）", "status": "open", "lastTouchedTurn": 0, "note": "拟行於常州官田，尚未上奏" },
+    { "id": "t4", "title": "官本商营与考课新制的奏疏回音", "status": "open", "lastTouchedTurn": 0, "note": "熙宁元年托同年转达，尚无回音" },
+    { "id": "t5", "title": "赌场账本上的「杨」字", "status": "open", "lastTouchedTurn": 0, "note": "旧案残留，长期未查" },
+    { "id": "t6", "title": "郝有财人牙案两名被拐者下落", "status": "open", "lastTouchedTurn": 0, "note": "两人生死不明" },
+    { "id": "t7", "title": "「台党」之议与私德之议对名声的影响", "status": "open", "lastTouchedTurn": 0, "note": "与人相交过多被解读为结党" },
+    { "id": "t8", "title": "余干灾伤状的后续（已在他人任上）", "status": "open", "lastTouchedTurn": 0, "note": "由继任者处理，结果未闻" }
+  ]
+}

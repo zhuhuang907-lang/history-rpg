@@ -1,0 +1,246 @@
+{
+  "figure": {
+    "name": "龍且",
+    "aliases": [],
+    "born": null,
+    "died": -203,
+    "diedM": 11,
+    "polity": "秦朝",
+    "gender": "男",
+    "father": "",
+    "traits": "秦末军事人物，为楚国项梁、项羽的部将",
+    "generated": true,
+    "generatedAt": "2026-10-08T00:11:41.922Z",
+    "evidenceSources": [
+      "zh.wikipedia.org/wiki/龍且",
+      "检索：龍且 传（wikipedia）",
+      "检索：龍且 -213年 秦朝（wikipedia）"
+    ],
+    "posts": [],
+    "timeline": [
+      {
+        "y": -208,
+        "m": null,
+        "kind": "event",
+        "text": "项梁引兵攻打亢父，与齐国田荣、司马龙且军救东阿，在东阿大破秦军",
+        "seat": "東阿"
+      },
+      {
+        "y": -206,
+        "m": null,
+        "kind": "event",
+        "text": "汉王刘邦起兵攻占三秦，楚将龙且和魏相项他与汉将灌婴在定陶之南交战失败",
+        "seat": "定陶"
+      },
+      {
+        "y": -205,
+        "m": null,
+        "kind": "event",
+        "text": "龙且、项声攻淮南，大破九江王黥布军，黥布逃亡汉军处",
+        "seat": "淮南"
+      },
+      {
+        "y": -204,
+        "m": 10,
+        "kind": "event",
+        "text": "曹参攻占临淄，项羽派遣龙且率兵号称有20万进攻汉军",
+        "seat": "臨淄"
+      },
+      {
+        "y": -203,
+        "m": 11,
+        "kind": "death",
+        "text": "龙且与韩信、骑将灌婴、吕泽、陈武、丁礼、丁复等联军在潍水对阵，被击杀",
+        "seat": "濰水"
+      }
+    ],
+    "resources": {
+      "note": "项羽派遣龙且率兵号称有20万进攻汉军",
+      "src": "维基百科·龍且",
+      "conf": "low"
+    },
+    "tensions": {},
+    "situation": {
+      "-213": [
+        {
+          "from": 1,
+          "text": "此时龙且为楚国项梁、项羽的部将，在楚地军中任职，秦朝尚未灭亡，天下未乱",
+          "tension": null,
+          "src": "维基百科·龍且",
+          "conf": "low",
+          "basis": "inferred"
+        }
+      ]
+    },
+    "circle": [
+      {
+        "name": "項羽",
+        "relation": "主君（龍且為其部將）",
+        "role": "楚將",
+        "seat": "彭城",
+        "born": -232,
+        "died": -202,
+        "far": false,
+        "note": "前204年遣龍且率號稱二十萬兵救齊",
+        "src": "維基百科·龍且",
+        "conf": "low"
+      },
+      {
+        "name": "田榮",
+        "relation": "盟軍（同救東阿）",
+        "role": "齊地反秦首領",
+        "seat": "齊",
+        "born": null,
+        "died": -205,
+        "far": true,
+        "note": "與項梁、司馬龍且軍救東阿，大破秦軍",
+        "src": "維基百科·龍且",
+        "conf": "low"
+      },
+      {
+        "name": "黥布",
+        "relation": "敵方（九江王）",
+        "role": "九江王",
+        "seat": "六",
+        "born": null,
+        "died": -195,
+        "far": false,
+        "note": "前205年被龍且、項聲攻破淮南，逃亡漢軍處",
+        "src": "維基百科·龍且",
+        "conf": "low"
+      },
+      {
+        "name": "灌嬰",
+        "relation": "敵方漢將",
+        "role": "漢軍騎將",
+        "seat": "定陶",
+        "born": null,
+        "died": -176,
+        "far": false,
+        "note": "前206年與龍且、項他戰於定陶之南；後與韓信聯軍破龍且於濰水",
+        "src": "維基百科·灌嬰",
+        "conf": "low"
+      },
+      {
+        "name": "韓信",
+        "relation": "敵方漢將",
+        "role": "漢軍統帥",
+        "seat": "齊",
+        "born": null,
+        "died": -196,
+        "far": false,
+        "note": "前204年與龍且對陣濰水，擊殺龍且",
+        "src": "維基百科·龍且",
+        "conf": "low"
+      },
+      {
+        "name": "丁復",
+        "relation": "敵方漢將",
+        "role": "漢軍將領",
+        "seat": "齊",
+        "born": null,
+        "died": -184,
+        "far": false,
+        "note": "隨呂澤等軍團破楚大將龍且於齊國",
+        "src": "維基百科·丁復",
+        "conf": "low"
+      }
+    ],
+    "factions": [
+      {
+        "from": [
+          -213,
+          1
+        ],
+        "title": "秦 對 楚（項梁、龍且等反秦武裝）",
+        "sideA": "秦",
+        "sideB": "楚",
+        "stake": "秦是否繼續以郡縣制統一天下，抑或六國舊地復起",
+        "src": "維基百科·龍且",
+        "conf": "low"
+      }
+    ],
+    "denied": []
+  },
+  "events": [
+    {
+      "id": "gen-龍且--208-0-4",
+      "polity": "秦朝",
+      "y": -208,
+      "m": null,
+      "d": null,
+      "text": "項梁引兵攻亢父，與田榮、司馬龍且軍救東阿，大破秦軍",
+      "place": "東阿",
+      "keys": [
+        "救東阿",
+        "東阿之戰"
+      ],
+      "src": "維基百科·龍且",
+      "conf": "medium",
+      "generated": true
+    },
+    {
+      "id": "gen-龍且--207-0-6",
+      "polity": "秦朝",
+      "y": -207,
+      "m": null,
+      "d": null,
+      "text": "項羽破秦軍於鉅鹿，秦將章邯降",
+      "place": "鉅鹿",
+      "keys": [
+        "鉅鹿之戰",
+        "巨鹿之戰"
+      ],
+      "src": "《史記·項羽本紀》",
+      "conf": "low",
+      "generated": true
+    },
+    {
+      "id": "gen-龍且--206-0-7",
+      "polity": "秦朝",
+      "y": -206,
+      "m": null,
+      "d": null,
+      "text": "漢王劉邦起兵攻占三秦；楚將龍且和魏相項他與漢將灌嬰在定陶之南交戰失敗",
+      "place": "定陶",
+      "keys": [
+        "定陶之南之戰"
+      ],
+      "src": "維基百科·龍且",
+      "conf": "medium",
+      "generated": true
+    },
+    {
+      "id": "gen-龍且--205-0-8",
+      "polity": "秦朝",
+      "y": -205,
+      "m": null,
+      "d": null,
+      "text": "龍且、項聲攻淮南，大破九江王黥布軍，黥布逃亡漢軍處",
+      "place": "淮南",
+      "keys": [
+        "淮南之戰",
+        "黥布降漢"
+      ],
+      "src": "維基百科·龍且",
+      "conf": "medium",
+      "generated": true
+    },
+    {
+      "id": "gen-龍且--204-10-9",
+      "polity": "秦朝",
+      "y": -204,
+      "m": 10,
+      "d": null,
+      "text": "曹參攻占臨淄，項羽派遣龍且率兵號稱二十萬進攻漢軍",
+      "place": "臨淄",
+      "keys": [
+        "臨淄之戰",
+        "龍且救齊"
+      ],
+      "src": "維基百科·龍且",
+      "conf": "low",
+      "generated": true
+    }
+  ]
+}

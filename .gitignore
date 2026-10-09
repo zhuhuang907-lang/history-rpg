@@ -1,0 +1,5 @@
+rpg-kernel/data/saves/
+rpg-kernel/data/cache/
+rpg-kernel/data/search.json
+rpg-kernel/data/adapter-config.json
+node_modules/

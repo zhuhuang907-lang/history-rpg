@@ -1,0 +1,33 @@
+# ===== 凭证与密钥：绝不上库 =====
+# data/adapter-config.json 内含明文 Deepseek API Key，一旦推送即泄露
+data/adapter-config.json
+*.env
+.env
+*.key
+*.pem
+
+# ===== 运行时数据：会产生大量无意义 diff =====
+data/saves/
+data/saves-quarantine/
+data/cache/
+data/logs/
+data/server.log
+data/search.json
+
+# ===== 误落在 data/ 下的浏览器缓存垃圾（约 473MB，与项目无关）=====
+data/app-window/
+
+# ===== 打包产物：二进制请走 GitHub Releases，不要进 git =====
+*.exe
+*.pkg
+*.dmg
+*.msi
+build/
+dist/
+
+# ===== 依赖与系统垃圾 =====
+node_modules/
+.DS_Store
+Thumbs.db
+*.swp
+*~
