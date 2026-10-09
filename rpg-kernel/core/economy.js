@@ -510,6 +510,11 @@ function tickEconomy(state, days) {
   if (grow) { pop.total += grow; changes.push(`人口 +${grow}`); }
   // 农事推进
   const ph = farmPhase(c.month);
+  // 灾情取自年景（与天降之事同一口径）：四月以后旱涝蝗显形，岁末翻年即解
+  try {
+    const om = require('./events').yearOmen(state);
+    e.agriculture.disaster = (/旱|水|涝|蝗/.test(om.kind) && Number(c.month) >= 4) ? om.kind : '无';
+  } catch (_) { /* 年景不可用时保持原值 */ }
   e.agriculture.phase = ph.phase;
   e.agriculture.busy = ph.busy;
   const disasterNow = e.agriculture.disaster && e.agriculture.disaster !== '无';

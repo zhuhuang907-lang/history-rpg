@@ -320,28 +320,68 @@ async function searchOne(query, providerId, cfg, opts = {}) {
  * 通用搜索只能给你一堆条目，SPARQL 能按 生卒年 / 朝代 / 官职 / 亲属关系 精确筛，
  * 并且直接返回结构化的生卒年，不用从正文里猜。
  */
+/* Wikidata 查询服务的脾气：同一来源并发或过快就 429，偶尔 502/504、超时；
+   连不上时（离线、被墙）每次都要等满超时。对策：
+   · 串行 + 至少 1.2 秒间隔（官方建议「别并发」）；
+   · 429/5xx/超时退避重试两次，尊重 Retry-After；
+   · 连续失败 3 次熔断 5 分钟，期间立即返回错误，由本地人物库兜底，不拖慢开局；
+   · 成功结果永久缓存（史实不变），失败不缓存。 */
+const WD = { last: 0, chain: Promise.resolve(), fails: 0, openUntil: 0, stats: { queries: 0, cached: 0, ok: 0, fail: 0, retries: 0 } };
+function wikidataStats() { return { ...WD.stats, consecutiveFails: WD.fails, paused: Date.now() < WD.openUntil ? new Date(WD.openUntil).toISOString() : null }; }
+
+async function sparqlOnce(query) {
+  const wait = WD.last + 1200 - Date.now();
+  if (wait > 0) await new Promise(r => setTimeout(r, wait));
+  WD.last = Date.now();
+  const res = await fetch('https://query.wikidata.org/sparql?format=json&query=' + encodeURIComponent(query), {
+    // Wikidata 要求带 User-Agent，否则直接 403
+    headers: { 'User-Agent': 'PivotEngine/0.2 (local history-rpg tool)', accept: 'application/sparql-results+json' },
+    signal: AbortSignal.timeout(45000),
+  });
+  const text = await res.text();
+  if (!res.ok) { const e = new Error(`SPARQL HTTP ${res.status} :: ${text.slice(0, 200)}`); e.retryAfter = Number(res.headers.get('retry-after')) || 0; e.status = res.status; throw e; }
+  return JSON.parse(text);
+}
+
 async function sparql(query, { noCache } = {}) {
   const key = hash('sparql|' + query);
-  if (!noCache) { const hit = await cacheRead(key); if (hit) return { ...hit, cached: true }; }
+  WD.stats.queries++;
+  if (!noCache) { const hit = await cacheRead(key); if (hit) { WD.stats.cached++; return { ...hit, cached: true }; } }
   const t0 = Date.now();
+  if (Date.now() < WD.openUntil) {
+    WD.stats.fail++;
+    return { provider: 'wikidata-sparql', rows: [], tookMs: 0, error: `Wikidata 连续失败，暂停查询至 ${new Date(WD.openUntil).toLocaleTimeString('zh-CN')}（改用本地人物库）` };
+  }
+  // 串行排队
+  const run = WD.chain.then(async () => {
+    let lastErr;
+    for (let i = 0; i < 3; i++) {
+      try { return await sparqlOnce(query); }
+      catch (e) {
+        lastErr = e;
+        const transient = e.status === 429 || e.status >= 500 || /timeout|aborted|fetch failed|ECONNRESET/i.test(String(e.message));
+        if (!transient || i === 2) break;
+        WD.stats.retries++;
+        await new Promise(r => setTimeout(r, Math.min(30000, e.retryAfter ? e.retryAfter * 1000 : 1500 * 2 ** i)));
+      }
+    }
+    throw lastErr;
+  });
+  WD.chain = run.catch(() => {});
   try {
-    const res = await fetch('https://query.wikidata.org/sparql?format=json&query=' + encodeURIComponent(query), {
-      // Wikidata 要求带 User-Agent，否则直接 403
-      headers: { 'User-Agent': 'PivotEngine/0.1 (local history-rpg tool)', accept: 'application/sparql-results+json' },
-      signal: AbortSignal.timeout(60000),
-    });
-    const text = await res.text();
-    if (!res.ok) throw new Error(`SPARQL HTTP ${res.status} :: ${text.slice(0, 200)}`);
-    const json = JSON.parse(text);
+    const json = await run;
     const rows = (json.results?.bindings || []).map(b => Object.fromEntries(
       Object.entries(b).map(([k, v]) => [k, v.value])
     ));
     const out = { provider: 'wikidata-sparql', rows, tookMs: Date.now() - t0, at: new Date().toISOString() };
     await cacheWrite(key, out);
+    WD.fails = 0; WD.stats.ok++;
     return out;
   } catch (e) {
+    WD.stats.fail++;
+    if (++WD.fails >= 3) { WD.openUntil = Date.now() + 5 * 60 * 1000; WD.fails = 0; }
     return { provider: 'wikidata-sparql', rows: [], tookMs: Date.now() - t0, error: String(e.message || e) };
   }
 }
 
-module.exports = { PROVIDERS, listProviders, search, sparql, loadConfig, saveConfig, isConfigured };
+module.exports = { wikidataStats, PROVIDERS, listProviders, search, sparql, loadConfig, saveConfig, isConfigured };

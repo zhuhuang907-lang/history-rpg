@@ -61,7 +61,7 @@ async function httpJson(url, { method = 'POST', headers = {}, body, timeoutMs = 
     signal: AbortSignal.timeout(timeoutMs),
   });
   const raw = await res.text();
-  if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} :: ${raw.slice(0, 400)}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}${res.headers.get('retry-after') ? ` retry-after ${res.headers.get('retry-after')}` : ''} :: ${raw.slice(0, 400)}`);
   let json = null;
   try { json = JSON.parse(raw); } catch { /* 非 JSON 响应按纯文本处理 */ }
   return { json, raw };
@@ -131,7 +131,7 @@ const mockText = {
 
 // OpenAI 兼容层：覆盖 OpenAI / DeepSeek / Qwen / Moonshot / vLLM / LM Studio / Ollama(兼容端点)
 // 注意：DeepSeek-R1（deepseek-reasoner）不接受 temperature/top_p 一类的采样参数，传了会被拒，所以按模型名跳过。
-async function openaiChat({ system, prompt, temperature, maxTokens }, cfg) {
+async function openaiChat({ system, prompt, temperature, maxTokens, json: jsonMode }, cfg) {
   const base = trimSlash(cfg.baseUrl || 'https://api.openai.com/v1');
   const model = cfg.model || 'gpt-4o-mini';
   const body = {
@@ -141,10 +141,13 @@ async function openaiChat({ system, prompt, temperature, maxTokens }, cfg) {
     stream: false,
   };
   if (!/reasoner|r1/i.test(model)) body.temperature = temperature ?? 0.9;
+  // JSON 模式：deepseek-chat 与多数 OpenAI 兼容接口支持，能大幅减少「返回不是合法 JSON」（R1 不支持，跳过）
+  if (jsonMode && !/reasoner|r1/i.test(model)) body.response_format = { type: 'json_object' };
   const { json } = await httpJson(`${base}/chat/completions`, {
     headers: cfg.apiKey ? { authorization: `Bearer ${cfg.apiKey}` } : {},
     body,
-    timeoutMs: cfg.timeoutMs || 180000,
+    // chat 模型 2 分钟足够，超时多半是服务端拥堵，交给护栏退避重试；R1 推理慢，给足 5 分钟
+    timeoutMs: cfg.timeoutMs || (/reasoner|r1/i.test(model) ? 300000 : 120000),
   });
   const text = json?.choices?.[0]?.message?.content ?? '';
   return { text, raw: JSON.stringify(json), meta: { adapter: 'openai-compatible', model, usage: json?.usage } };
@@ -415,15 +418,17 @@ async function resolveAdapter(id, runtimeConfig) {
     || all.find(a => a.id === id)
     || all.find(a => a.id === 'skeleton');
   const cfg = { ...(found.config || {}), ...(runtimeConfig || {}) };
+  const guarded = require('./guard').guard(found);
   const degraded = found.id === 'skeleton' && !!id && id !== 'skeleton';
   if (degraded) console.warn(`[adapter] 适配器「${id}」不可用，退回本地骨架（正文会是占位符）`);
-  return { adapter: found, config: cfg, degraded };
+  return { adapter: guarded, config: cfg, degraded };
 }
 
 async function testAdapter(id, runtimeConfig) {
   const { adapter, config } = await resolveAdapter(id, runtimeConfig);
   const t0 = Date.now();
-  const res = await adapter.call({ system: '你是一个连通性测试。', prompt: '只回复两个字：正常' }, config);
+  // 测试连接要绕过熔断（用户刚换了 Key，就是来试的）；成功即解除熔断
+  const res = await adapter.call({ system: '你是一个连通性测试。', prompt: '只回复两个字：正常' }, { ...config, __noBreaker: true });
   return { ok: true, ms: Date.now() - t0, adapter: adapter.id, preview: String(res.text).slice(0, 200) };
 }
 
