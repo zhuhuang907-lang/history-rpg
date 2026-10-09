@@ -1,0 +1,219 @@
+{
+  "identity": "emperor",
+  "eraLabel": "万历十五年",
+  "gregorianYear": 1587,
+  "polity": "明",
+  "place": "北京",
+  "ruler": {
+    "value": {
+      "name": "朱翊钧",
+      "title": "明神宗（万历）",
+      "age": 25,
+      "born": 1563,
+      "died": 1620,
+      "polity": "明"
+    },
+    "source": "offline",
+    "confidence": "high",
+    "note": "离线帝王年表（秦→清），按政权+公元年精确定位该年在位君主"
+  },
+  "eraEvents": [
+    {
+      "value": "张居正已殁，朝局一变",
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "规则包内置真实事件（按本局时代选取）"
+    },
+    {
+      "value": "矿税使未遣而议论已兴，言官力争",
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "规则包内置真实事件（按本局时代选取）"
+    },
+    {
+      "value": "宁夏哱拜蓄叛，河西将变",
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "规则包内置真实事件（按本局时代选取）"
+    },
+    {
+      "value": "朝鲜壬辰之役前夜，倭将侵边",
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "规则包内置真实事件（按本局时代选取）"
+    },
+    {
+      "value": "国本之争起，廷臣请立储",
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "规则包内置真实事件（按本局时代选取）"
+    }
+  ],
+  "factions": [
+    {
+      "value": {
+        "title": "内阁票拟之臣 对 司礼监秉笔（内廷）",
+        "stake": "票拟与批红之权相争，阁权与宦权此消彼长",
+        "sideA": "内阁票拟之臣",
+        "sideB": "司礼监秉笔（内廷）",
+        "membersA": [],
+        "membersB": [],
+        "provisional": true
+      },
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "按朝代党争框架生成，成员须依史实指认，引擎不随机塞人"
+    },
+    {
+      "value": {
+        "title": "清流言官 对 阉党近幸",
+        "stake": "言路与内廷互讦，科道弹章与诏狱相随",
+        "sideA": "清流言官",
+        "sideB": "阉党近幸",
+        "membersA": [],
+        "membersB": [],
+        "provisional": true
+      },
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "按朝代党争框架生成，成员须依史实指认，引擎不随机塞人"
+    },
+    {
+      "value": {
+        "title": "主战边臣 对 主和枢臣",
+        "stake": "战守之议相持，边饷与和款两难",
+        "sideA": "主战边臣",
+        "sideB": "主和枢臣",
+        "membersA": [],
+        "membersB": [],
+        "provisional": true
+      },
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "按朝代党争框架生成，成员须依史实指认，引擎不随机塞人"
+    }
+  ],
+  "numericCeiling": {
+    "value": "=== 数字量级（动笔前先算，超出即算错） ===\n本局时代的参考上限（已按时代折算，x0.7）：一县户数 ≤ 42,000；一郡户数 ≤ 350,000；全国户数 ≤ 16,800,000；\n一县兵 ≤ 4,200；一郡兵 ≤ 28,000；一州兵 ≤ 140,000；一坞堡 ≤ 5,600；单处粮储 ≤ 3,500,000 石。\n写具体数目之前，先想清楚：这是哪一级（县/郡/州/国）？该级通常多少？再落笔。数字一旦被玩家订正，**旧数字全部作废，此后不得再用**。",
+    "source": "rulepack",
+    "confidence": "medium",
+    "note": "按行政级别与本局时代折算的量级上限（先算再写）"
+  },
+  "eraVocab": [
+    {
+      "modern": "人权",
+      "ancient": "「性命」「本分」——古代无此观念；古人所争是名分、活路、公道",
+      "cat": "观念"
+    },
+    {
+      "modern": "权利",
+      "ancient": "名分、该得的份例",
+      "cat": "观念"
+    },
+    {
+      "modern": "自由",
+      "ancient": "自在、不受拘管（且古人视之为难得，非天经地义）",
+      "cat": "观念"
+    },
+    {
+      "modern": "民主",
+      "ancient": "众议、公推、乡论（绝非人人有份的政体）",
+      "cat": "观念"
+    },
+    {
+      "modern": "平等",
+      "ancient": "古人讲「一视同仁」是德，不认「人人平等」是理；等级是天经地义",
+      "cat": "观念"
+    },
+    {
+      "modern": "人权平等",
+      "ancient": "无此观念；须按等级、良贱、主仆之别写",
+      "cat": "观念"
+    },
+    {
+      "modern": "法治",
+      "ancient": "王法、律令（法自君出，非约束君权）",
+      "cat": "观念"
+    },
+    {
+      "modern": "隐私",
+      "ancient": "无此概念；家事、私事在宗族与邻里间本就无所遁形",
+      "cat": "观念"
+    }
+  ],
+  "geography": {
+    "value": {
+      "地形": "不详",
+      "水系": "不详",
+      "道路驿站": "不详",
+      "物产": "不详",
+      "常发灾异": "不详",
+      "note": "地理由真实检索生成；未查到的字段为「不详」，不编造。",
+      "source": "zh.wikipedia.org/北京市（条目真实正文）",
+      "eraName": "北京",
+      "real": true
+    },
+    "source": "wikidata",
+    "confidence": "high",
+    "note": "真实地理检索，未查到的字段为「不详」，不编造"
+  },
+  "persons": [
+    {
+      "value": {
+        "name": "郑贵妃",
+        "role": "贵妃",
+        "age": 21,
+        "nativePlace": "",
+        "born": 1567,
+        "died": 1630,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "朱常洛",
+        "role": "皇长子",
+        "age": 6,
+        "nativePlace": "",
+        "born": 1582,
+        "died": 1620,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "朱常洵",
+        "role": "皇三子",
+        "age": 2,
+        "nativePlace": "",
+        "born": 1586,
+        "died": 1641,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "利玛窦",
+        "role": "传教士",
+        "age": 36,
+        "nativePlace": "",
+        "born": 1552,
+        "died": 1610,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    }
+  ],
+  "generatedAt": "2026-10-09T00:39:02.068Z"
+}

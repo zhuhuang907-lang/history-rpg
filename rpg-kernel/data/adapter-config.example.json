@@ -1,0 +1,10 @@
+{
+  "selected": "deepseek",
+  "configs": {
+    "deepseek": {
+      "apiKey": "在这里填你自己的 Key，不要提交真实密钥",
+      "model": "deepseek-chat",
+      "baseUrl": "https://api.deepseek.com"
+    }
+  }
+}

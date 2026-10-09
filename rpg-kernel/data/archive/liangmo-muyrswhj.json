@@ -1,0 +1,316 @@
+{
+  "identity": "noble",
+  "eraLabel": "太清二年",
+  "gregorianYear": 548,
+  "polity": "梁",
+  "place": "成都",
+  "ruler": {
+    "value": {
+      "name": "萧衍",
+      "title": "梁武帝",
+      "age": 85,
+      "born": 464,
+      "died": 549,
+      "polity": "梁"
+    },
+    "source": "offline",
+    "confidence": "high",
+    "note": "离线帝王年表（秦→清），按政权+公元年精确定位该年在位君主"
+  },
+  "eraEvents": [
+    {
+      "value": "侯景以河南十三州降梁，梁武帝纳之，授大将军、河南王、都督河南北诸军事",
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "规则包内置真实事件（按本局时代选取）"
+    },
+    {
+      "value": "东魏慕容绍宗大破侯景于涡阳，侯景率八百余残兵走保寿阳",
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "规则包内置真实事件（按本局时代选取）"
+    }
+  ],
+  "factions": [
+    {
+      "value": {
+        "title": "门阀士族 对 寒人近幸",
+        "stake": "武帝晚年朱异等寒人用事，士族不平；侯景起兵即以「诛朱异」为名",
+        "sideA": "门阀士族",
+        "sideB": "寒人近幸（朱异等）",
+        "membersA": [],
+        "membersB": [],
+        "provisional": false,
+        "source": "figure-data",
+        "src": "《梁书·朱异传》《梁书·侯景传》",
+        "conf": "high"
+      },
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "按朝代党争框架生成，成员须依史实指认，引擎不随机塞人"
+    }
+  ],
+  "numericCeiling": {
+    "value": "=== 数字量级（动笔前先算，超出即算错） ===\n本局时代的参考上限（已按时代折算，x1）：一县户数 ≤ 60,000；一郡户数 ≤ 500,000；全国户数 ≤ 24,000,000；\n一县兵 ≤ 6,000；一郡兵 ≤ 40,000；一州兵 ≤ 200,000；一坞堡 ≤ 8,000；单处粮储 ≤ 5,000,000 石。\n写具体数目之前，先想清楚：这是哪一级（县/郡/州/国）？该级通常多少？再落笔。数字一旦被玩家订正，**旧数字全部作废，此后不得再用**。",
+    "source": "rulepack",
+    "confidence": "medium",
+    "note": "按行政级别与本局时代折算的量级上限（先算再写）"
+  },
+  "eraVocab": [
+    {
+      "modern": "人权",
+      "ancient": "「性命」「本分」——古代无此观念；古人所争是名分、活路、公道",
+      "cat": "观念"
+    },
+    {
+      "modern": "权利",
+      "ancient": "名分、该得的份例",
+      "cat": "观念"
+    },
+    {
+      "modern": "自由",
+      "ancient": "自在、不受拘管（且古人视之为难得，非天经地义）",
+      "cat": "观念"
+    },
+    {
+      "modern": "民主",
+      "ancient": "众议、公推、乡论（绝非人人有份的政体）",
+      "cat": "观念"
+    },
+    {
+      "modern": "平等",
+      "ancient": "古人讲「一视同仁」是德，不认「人人平等」是理；等级是天经地义",
+      "cat": "观念"
+    },
+    {
+      "modern": "人权平等",
+      "ancient": "无此观念；须按等级、良贱、主仆之别写",
+      "cat": "观念"
+    },
+    {
+      "modern": "法治",
+      "ancient": "王法、律令（法自君出，非约束君权）",
+      "cat": "观念"
+    },
+    {
+      "modern": "隐私",
+      "ancient": "无此概念；家事、私事在宗族与邻里间本就无所遁形",
+      "cat": "观念"
+    }
+  ],
+  "geography": {
+    "value": {
+      "地形": "地处四川盆地西部的成都平原腹地",
+      "水系": "主持修建了举世闻名的都江堰水利工程",
+      "道路驿站": "开辟了由秦入蜀的石牛道（即金牛道）",
+      "物产": "农业、盐业和织锦业",
+      "常发灾异": "不详",
+      "note": "地理由真实检索生成；未查到的字段为「不详」，不编造。",
+      "source": "zh.wikipedia.org/成都市（条目真实正文）",
+      "eraName": "成都",
+      "real": true
+    },
+    "source": "wikidata",
+    "confidence": "high",
+    "note": "真实地理检索，未查到的字段为「不详」，不编造"
+  },
+  "persons": [
+    {
+      "value": {
+        "name": "萧圆照",
+        "role": "武陵王世子",
+        "age": null,
+        "nativePlace": "",
+        "born": null,
+        "died": 553,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "萧圆正",
+        "role": "武陵王之子",
+        "age": null,
+        "nativePlace": "",
+        "born": null,
+        "died": 553,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "萧撝",
+        "role": "宗室，随萧纪在蜀",
+        "age": 34,
+        "nativePlace": "",
+        "born": 515,
+        "died": 573,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "刘孝胜",
+        "role": "萧纪幕府长史",
+        "age": null,
+        "nativePlace": "",
+        "born": null,
+        "died": null,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "王僧略",
+        "role": "萧纪幕府司马",
+        "age": null,
+        "nativePlace": "",
+        "born": null,
+        "died": 552,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "徐怦",
+        "role": "萧纪幕府直兵参军",
+        "age": null,
+        "nativePlace": "",
+        "born": null,
+        "died": 552,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "杨乾运",
+        "role": "萧纪部将",
+        "age": null,
+        "nativePlace": "",
+        "born": null,
+        "died": null,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "萧衍",
+        "role": "梁武帝",
+        "age": 85,
+        "nativePlace": "",
+        "born": 464,
+        "died": 549,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "萧纲",
+        "role": "皇太子",
+        "age": 46,
+        "nativePlace": "",
+        "born": 503,
+        "died": 551,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "萧绎",
+        "role": "湘东王、荆州刺史",
+        "age": 41,
+        "nativePlace": "",
+        "born": 508,
+        "died": 554,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "萧詧",
+        "role": "岳阳王、雍州刺史",
+        "age": 30,
+        "nativePlace": "",
+        "born": 519,
+        "died": 562,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "侯景",
+        "role": "河南王（东魏降将，据寿阳）",
+        "age": 46,
+        "nativePlace": "",
+        "born": 503,
+        "died": 552,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "王僧辩",
+        "role": "萧绎部将",
+        "age": null,
+        "nativePlace": "",
+        "born": null,
+        "died": 555,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "宇文泰",
+        "role": "西魏权臣（丞相，总揽朝政）",
+        "age": 42,
+        "nativePlace": "",
+        "born": 507,
+        "died": 556,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    }
+  ],
+  "generatedAt": "2026-10-08T00:02:35.388Z"
+}
