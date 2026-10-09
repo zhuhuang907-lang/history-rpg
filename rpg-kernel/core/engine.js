@@ -1831,6 +1831,12 @@ async function applyDraft({ saveId, draft, input, advanceDays, edits, force }) {
   // —— 世界自行推进：玩家不动，世界也在动（NPC 自己排队做事 / 消息往外传 / 分歧扩散 / 经济与季节）——
   const advDays = (typeof advanceDays === 'number' && advanceDays > 0) ? advanceDays : 0;
   const worldChanges = world.tickWorld(state, advDays);      // 季节/天气/交通/经济/疫病/宏观/秩序
+  // 朝局：钱赋实收、军饷、民心、吏治、匪患自行演化；再按新局面生成本回合的案牍
+  try {
+    const court = require('./court');
+    for (const t of court.tickCourt(state, advDays)) worldChanges.push(t);
+    court.generate(state);
+  } catch (e) { console.warn('朝局推进失败（不影响采纳）：', e && e.message); }
   const npcActions = agency.tickNpcs(state, advDays);        // NPC 独立行动队列
   const rumors = info.spread(state, advDays);                // 信息传播：延迟/遗漏/误传/谣言
   const ripples = div.propagate(state, advDays);             // 历史分歧一级一级往外走

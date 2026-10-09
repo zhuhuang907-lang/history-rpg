@@ -51,7 +51,7 @@ async function readBody(req) {
 }
 
 const routes = {
-  'GET /api/health': async () => ({ ok: true, node: process.version }),
+  'GET /api/health': async () => ({ ok: true, node: process.version, llm: require('./adapters/guard').stats(), wikidata: require('./adapters/search').wikidataStats ? require('./adapters/search').wikidataStats() : null }),
   'GET /api/rulepacks': async () => engine.listRulepacks(),
   'GET /api/saves': async () => engine.listSaves(),
   'GET /api/adapters': async () => adapters.listAdapters(),
@@ -92,6 +92,23 @@ const routes = {
     // 明明被拦下了，玩家却以为生效了。这是实打实的功能 bug。
     if (s && s.ok === false) return s;
     return { ok: true, state: s };
+  },
+  /* ---- 朝政 / 案牍（不依赖大模型） ---- */
+  async 'POST /api/court'(body) {
+    const court = require('./core/court');
+    const s = await engine.loadState(body.saveId);
+    court.generate(s);
+    await engine.writeState(s);
+    return { ok: true, ...court.view(s) };
+  },
+  async 'POST /api/court/decide'(body) {
+    const court = require('./core/court');
+    const s = await engine.loadState(body.saveId);
+    const r = court.decide(s, body.id, body.option);
+    if (!r.ok) return r;
+    court.generate(s);
+    await engine.writeState(s);
+    return { ok: true, text: r.text, ...court.view(s), state: s };
   },
   async 'POST /api/thread'(body) {
     return engine.updateThread(body);

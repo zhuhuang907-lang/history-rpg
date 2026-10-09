@@ -443,6 +443,7 @@ function renderState() {
 
   renderMap(s);
   applyPanels(s);
+  renderCourtBox();
   renderWarPanel();   // 只有存档里有 encounter（正打着仗）时才显示
   renderCorrections();
   if (typeof updateAdvPreview === 'function') updateAdvPreview();
@@ -493,6 +494,38 @@ function renderState() {
   if (!hasLog && $('#btnOpening')) $('#btnOpening').onclick = () => runTurnWith('', []);
   $('#draftBox').classList.add('hidden');
 }
+
+/* ================= 案牍（朝政）：不依赖 AI，每个选项的后果先看后批 ================= */
+async function renderCourtBox() {
+  const box = $('#courtBox');
+  if (!STATE) { box.classList.add('hidden'); return; }
+  let c;
+  try { c = await post('/api/court', { saveId: STATE.meta.id }); } catch (e) { box.classList.add('hidden'); return; }
+  if (!c || !c.ok) { box.classList.add('hidden'); return; }
+  box.classList.remove('hidden');
+  const idm = STATE.identityModule || 'official';
+  $('#courtTitle').textContent = { emperor: '御案奏章', warlord: '军中文报', commoner: '家中诸事', noble: '府中禀帖' }[idm] || '案头公文';
+  const bad = { 民心: v => v < 35, 吏治: v => v < 35, 威望: v => v < 35, 匪患: v => v > 60 };
+  const good = { 民心: v => v >= 65, 吏治: v => v >= 65, 威望: v => v >= 65, 匪患: v => v <= 20 };
+  $('#courtGauges').innerHTML = Object.entries(c.gauges).map(([k, v]) =>
+    `<span class="gauge ${bad[k](v) ? 'bad' : good[k](v) ? 'good' : ''}">${k} ${v}</span>`).join('');
+  $('#courtList').innerHTML = c.pending.length
+    ? c.pending.map(m => `<div class="memo"><div class="mt">${escapeHtml(m.title)}<span class="mf">${escapeHtml(m.from)}${escapeHtml(m.kind)}</span></div>
+        <div class="mx">${escapeHtml(m.text)}</div>
+        <div class="opts">${m.options.map(o => `<button class="opt" data-memo="${escapeHtml(m.id)}" data-opt="${escapeHtml(o.id)}"><span>${escapeHtml(o.label)}</span><small>${escapeHtml(o.preview)}</small></button>`).join('')}</div></div>`).join('')
+    : '<div class="muted">眼下没有待批的案牍。推进时间后，引擎会按钱粮、灾情、军心送来新的。</div>';
+  $('#courtHist').innerHTML = c.history.length ? '近来所批：' + c.history.slice(0, 4).map(h => `${escapeHtml(h.title)}→${escapeHtml(h.choice)}`).join('；') : '';
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest && e.target.closest('button[data-memo]');
+  if (!b || !STATE) return;
+  b.disabled = true;
+  const r = await post('/api/court/decide', { saveId: STATE.meta.id, id: b.dataset.memo, option: b.dataset.opt });
+  if (!r.ok) { alert(r.why || '批阅失败'); b.disabled = false; return; }
+  if (r.state) STATE = r.state;
+  renderStatusBar();
+  await renderCourtBox();
+});
 
 function suggestFirstAction(s) {
   return (s.threads || [])[0] ? `我要查${s.threads[0].title}` : '先看看眼前是什么情况';

@@ -404,6 +404,8 @@ function buildPrompt(pack, state, input, opts = {}) {
     '',
     renderEvent(state.currentEvent),
     '',
+    (() => { try { return require('./court').renderCourt(state); } catch (_) { return ''; } })(),
+    '',
     renderAnchors(state),
     '',
     renderEvents(pack, state),
