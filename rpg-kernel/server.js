@@ -91,6 +91,14 @@ const routes = {
     // 于是「过期草稿 / 剧情作弊 / 剧情硬伤」三道拦截在界面上全都显示「成功」——
     // 明明被拦下了，玩家却以为生效了。这是实打实的功能 bug。
     if (s && s.ok === false) return s;
+    // 预取：玩家读新局面、批案牍的这段时间里，后台先把下一轮必查的史料查好放进缓存。
+    // 下一轮真正检索时直接命中缓存，回合更快，也不怕那一刻检索源抽风。
+    setImmediate(async () => {
+      try {
+        const qs = require('./core/factcheck').planPreSearch(s, '');
+        for (const q of qs) await search.search(q, { noCache: false }).catch(() => null);
+      } catch (_) { /* 预取失败无妨 */ }
+    });
     return { ok: true, state: s };
   },
   /* ---- 朝政 / 案牍（不依赖大模型） ---- */

@@ -24,6 +24,16 @@ const post = async (u, b) => (await fetch(u, { method: 'POST', headers: { 'conte
 const get = async u => (await fetch(u)).json();
 const escapeHtml = s => String(s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+/* 干支纪年（按农历年；公元前年份无公元 0 年）与正文排版 */
+const GAN = '甲乙丙丁戊己庚辛壬癸', ZHI = '子丑寅卯辰巳午未申酉戌亥';
+function ganzhi(y) { if (!y) return ''; const a = y < 0 ? y + 1 : y; const i = (((a - 4) % 60) + 60) % 60; return GAN[i % 10] + ZHI[i % 12]; }
+const SEASON_WORD = { 春: '春', 夏: '夏', 秋: '秋', 冬: '冬' };
+/* 正文：按段落排版，「」里的对白另上颜色，让人一眼分出谁在说话 */
+function formatScene(text) {
+  return String(text || '').split(/\n+/).map(p => p.trim()).filter(Boolean)
+    .map(p => `<p>${escapeHtml(p).replace(/「([^」]{1,400})」/g, '<span class="say">「$1」</span>')}</p>`).join('');
+}
+
 let STATE = null, ADAPTERS = [], CONFIGS = {}, LAST = null, SEARCH = null, VERIFY_LOG = [], PACK = null, SEL = 'deepseek';
 
 async function loadCfgs() {
@@ -149,7 +159,7 @@ function renderStatusBar() {
   const bar = $('#statusBar');
   if (!STATE) { bar.innerHTML = '还没开局 —— 选一个现成的，或点「＋ 新开局」'; return; }
   const s = STATE;
-  bar.innerHTML = `<b>${escapeHtml(s.title)}</b> · ${escapeHtml(s.clock.yearLabel)}（${s.clock.gregorianYear < 0 ? '前' + -s.clock.gregorianYear : s.clock.gregorianYear}年）${s.clock.month}月${s.clock.day}日 · ${escapeHtml(s.location.full)} · 你是 ${escapeHtml(s.protagonist.name)}${s.protagonist.gender ? '（' + escapeHtml(s.protagonist.gender) + '）' : ''}，${s.protagonist.age}岁`;
+  bar.innerHTML = `<b>${escapeHtml(s.title)}</b> · ${escapeHtml(s.clock.yearLabel)}${ganzhi(s.clock.gregorianYear) ? ' · 岁在' + ganzhi(s.clock.gregorianYear) : ''}${s.clock.season ? ' · ' + escapeHtml(SEASON_WORD[s.clock.season] || s.clock.season) : ''}（${s.clock.gregorianYear < 0 ? '前' + -s.clock.gregorianYear : s.clock.gregorianYear}年）${s.clock.month}月${s.clock.day}日 · ${escapeHtml(s.location.full)} · 你是 ${escapeHtml(s.protagonist.name)}${s.protagonist.gender ? '（' + escapeHtml(s.protagonist.gender) + '）' : ''}，${s.protagonist.age}岁`;
 }
 
 /* ================= 新开局（任意朝代 / 身份 / 地点） ================= */
@@ -413,8 +423,10 @@ function renderState() {
       return !!(n.firstSeenTurn && n.firstSeenTurn > 0);
     };
     const tracksAttitude = ['warlord', 'emperor'].includes(s.identityModule);
-    const card = (n, tag) => `<div class="item">
-      <div class="t">${escapeHtml(n.name)} <span class="meta">${n.gender ? escapeHtml(n.gender) + ' · ' : ''}${n.age ? n.age + '岁 · ' : ''}${escapeHtml(n.role || '')}</span></div>
+    const card = (n, tag) => `<div class="item ${n.source === 'historical' ? 'real' : 'fict'}">
+      <div class="t">${escapeHtml(n.name)} ${n.source === 'historical'
+        ? `<span class="badge real">史载${n.born || n.died ? ' ' + (n.born ?? '?') + '—' + (n.died ?? '?') : ''}</span>${n.qid ? ` <a class="meta" href="https://www.wikidata.org/wiki/${escapeHtml(n.qid)}" target="_blank" rel="noreferrer">出处</a>` : n.src ? ` <span class="meta">${escapeHtml(n.src)}</span>` : ''}`
+        : '<span class="badge fict">虚构</span>'} <span class="meta">${n.gender ? escapeHtml(n.gender) + ' · ' : ''}${n.age ? n.age + '岁 · ' : ''}${escapeHtml(n.role || '')}</span></div>
       <div class="meta">${tag} · 籍贯：${escapeHtml(n.nativePlace || '—')}</div>
       ${n.office ? `<div class="meta">真实职掌：${escapeHtml(n.office)}</div>` : ''}
       ${n.background ? `<div class="meta">背景：${escapeHtml(n.background)}</div>` : ''}
@@ -483,7 +495,7 @@ function renderState() {
 
   const hasLog = (s.log || []).some(l => l.speaker === 'GM');
   $('#logBox').innerHTML = s.log.map(l => `
-    <div class="entry"><div class="who">第${l.turn}轮 · ${escapeHtml(l.time)} · ${escapeHtml(l.speaker)}</div><div class="scene">${escapeHtml(l.text)}</div></div>`).join('')
+    <div class="entry"><div class="who">第${l.turn}轮 · ${escapeHtml(l.time)} · ${escapeHtml(l.speaker)}</div><div class="scene">${formatScene(l.text)}</div></div>`).join('')
     || `<div class="openingCard">
         <div class="oc-t">新局已就绪 · 还没有开场</div>
         <div class="oc-d">点下面「${escapeHtml(s.opening ? '生成开场' : '生成开场')}」，AI 会先交代清楚：<b>时间（年号+公元+季节+日子）、地点（当时的古地名，隶属谁、谁控制）、你是谁（姓名/年岁/性别/身份职衔/籍贯出身）、家世与处境、当朝天子与天下大势、眼下压到你身上的那一桩事、在场各人的姓名神情</b>，最后停在你要拿主意的坎上。</div>
@@ -695,7 +707,7 @@ $('#input').addEventListener('keydown', e => {
 
 function renderLast() {
   const d = LAST.draft || {};
-  $('#draftScene').textContent = d.scene || '（AI 没返回正文，通常是 Key 没生效或返回被截断）';
+  $('#draftScene').innerHTML = d.scene ? formatScene(d.scene) : '<p class="muted">（AI 没返回正文，通常是 Key 没生效或返回被截断）</p>';
   // GM 规范第六章的固定栏目：【当前情况】在正文前，其余在正文后
   const g = d.gmPanels;
   const box = (id, before) => {

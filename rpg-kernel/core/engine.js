@@ -153,6 +153,9 @@ async function createSave({ ruleset, starterId, title }) {
     ...seed,
     log: [],
   };
+  // 预置局面是人工写定的：补上标题，线索标明出处——否则会被误判为「旧版随机模板」，新局一开就弹重算提示
+  if (!state.title) state.title = state.meta.title;
+  for (const t of state.threads || []) if (!t.source) t.source = 'starter';
   await writeState(state);
   return state;
 }

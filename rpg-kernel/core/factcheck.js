@@ -15,7 +15,7 @@
  */
 
 /* 只挑「值得查、查得到、错了要命」的词，控制调用量 */
-const MAX_PRE = 4;
+const MAX_PRE = 5;
 const MAX_POST = 4;
 
 const has = (s, w) => s && s.indexOf(w) >= 0;
@@ -30,15 +30,18 @@ function planPreSearch(state, input) {
   const pol = (state.location && state.location.polity) || '';
 
   // 1) 在场真人（最该核，错了最要命）——带年份一起查，避免同名异代
+  // 长局里轮流复查：每回合换两位，几回合下来名册上的真人都会被重新核一遍（人会升迁、贬谪、死去）
   const hist = (state.npcs || []).filter(n => n.source === 'historical' && n.name);
-  for (const n of hist.slice(0, 2)) push(gy ? `${n.name} ${gy} 生平` : `${n.name} 生平`);
+  const off = hist.length ? ((state.turn || 0) * 2) % hist.length : 0;
+  for (const n of hist.slice(off, off + 2).concat(hist.slice(0, Math.max(0, off + 2 - hist.length)))) push(gy ? `${n.name} ${gy} 生平` : `${n.name} 生平`);
 
   // 2) 玩家输入里点名的真实对象（人物/大事/地名）
   const inp = String(input || '');
   const ev = inp.match(/[\u4e00-\u9fa5]{2,6}(?:之乱|之變|之变|之战|之戰|起义|起義|变法|變法|和议|和議|之盟|北伐)/);
   if (ev) {
     // 去掉前缀动词（"我想打听祖逖北伐" → "祖逖北伐"）
-    const cleaned = ev[0].replace(/^(?:我想|我要|我想查|去|查|问|打听|了解|找|关于|看看)/, '');
+    // 前缀可能叠用（「我想打听」「去查查」），反复剥到剩下名词为止
+    const cleaned = ev[0].replace(/^(?:我|想|要|去|查|问|打听|了解|找|关于|看看|听说)+/, '');
     if (cleaned.length >= 2) push(`${cleaned} ${era}`.trim());
   }
   const per = inp.match(/(?:查|问|打听|了解|找)\s*([\u4e00-\u9fa5]{2,4})(?:的|这|那|$)/);
@@ -47,6 +50,9 @@ function planPreSearch(state, input) {
   // 3) 本局的时空基线（一次查清，防止把朝代/归属写错）
   const loc = (state.location && state.location.full) || '';
   if (loc && pol) push(`${loc} ${pol} ${era} 沿革`.trim());
+
+  // 4) 本年天下大事：保证史事进程连贯（每年换一次查询词，命中缓存后几乎零成本）
+  if (gy && pol) push(`${pol} ${gy}年 大事`);
 
   return q.slice(0, MAX_PRE);
 }

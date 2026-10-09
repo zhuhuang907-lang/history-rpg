@@ -13,18 +13,30 @@
 
 const BREAKER_MS = 10 * 60 * 1000;
 const MAX_CONCURRENT = 2;
+
+/**
+ * DeepSeek 的高峰按北京时间算（白天到午夜最挤，凌晨最空）。美国玩家的白天恰好落在北京凌晨，
+ * 是一天里最快、最稳的时段。高峰时：并发降到 1、超时放宽，避免排队请求互相拖垮。
+ */
+function beijingHour(now = Date.now()) { return new Date(now + 8 * 3600 * 1000).getUTCHours() + new Date(now + 8 * 3600 * 1000).getUTCMinutes() / 60; }
+function peakInfo(now = Date.now()) {
+  const h = beijingHour(now);
+  const offPeak = h >= 0.5 && h < 8.5;                     // 北京 00:30–08:30
+  return { beijingHour: Math.floor(h), peak: !offPeak, label: offPeak ? '北京凌晨·低谷（最快）' : (h >= 9 && h < 23 ? '北京白天·高峰' : '北京深夜·次高峰') };
+}
+const maxConcurrent = () => (peakInfo().peak ? 1 : MAX_CONCURRENT);
 const CACHE_MS = 10 * 60 * 1000;
 
 const state = new Map(); // adapterId -> { active, queue, openUntil, why, stats }
 const cache = new Map();
 
 function slot(id) {
-  if (!state.has(id)) state.set(id, { active: 0, queue: [], openUntil: 0, why: '', stats: { calls: 0, ok: 0, fail: 0, retries: 0, cached: 0, repaired: 0, promptTokens: 0, completionTokens: 0 } });
+  if (!state.has(id)) state.set(id, { active: 0, queue: [], openUntil: 0, why: '', lat: [], stats: { calls: 0, ok: 0, fail: 0, retries: 0, cached: 0, repaired: 0, promptTokens: 0, completionTokens: 0 } });
   return state.get(id);
 }
 
 async function acquire(s) {
-  if (s.active < MAX_CONCURRENT) { s.active++; return; }
+  if (s.active < maxConcurrent()) { s.active++; return; }
   await new Promise(res => s.queue.push(res));
   s.active++;
 }
@@ -82,12 +94,20 @@ function guard(adapter) {
       for (let attempt = 0; attempt < 3; attempt++) {
         try {
           let res;
+          // 自适应超时：按最近 20 次耗时的最大值 ×2.5 估计（不低于默认），高峰再放宽 1.5 倍
+          const recent = s.lat.slice(-20);
+          if (!cfg.timeoutMs && recent.length >= 3) {
+            const est = Math.max(...recent) * 2.5 * (peakInfo().peak ? 1.5 : 1);
+            cfg = { ...cfg, timeoutMs: Math.min(300000, Math.max(90000, Math.round(est))) };
+          }
+          const t0 = Date.now();
           try { res = await raw({ ...params, json }, cfg); }
           catch (e) {
             // 有的兼容接口不认 response_format：去掉 JSON 模式再试一次
             if (json && /HTTP 400/.test(String(e.message)) && /response_format|json/i.test(String(e.message))) res = await raw({ ...params, json: false }, cfg);
             else throw e;
           }
+          s.lat.push(Date.now() - t0); if (s.lat.length > 50) s.lat.shift();
           const u = res && res.meta && res.meta.usage;
           if (u) { s.stats.promptTokens += u.prompt_tokens || 0; s.stats.completionTokens += u.completion_tokens || 0; }
           res = { ...res, text: stripThink(res.text) };
@@ -124,8 +144,8 @@ function guard(adapter) {
 
 function stats() {
   const out = {};
-  for (const [id, s] of state) out[id] = { ...s.stats, active: s.active, queued: s.queue.length, breaker: Date.now() < s.openUntil ? { open: true, why: s.why, until: new Date(s.openUntil).toISOString() } : { open: false } };
-  return out;
+  for (const [id, s] of state) out[id] = { ...s.stats, avgMs: s.lat.length ? Math.round(s.lat.reduce((a, b) => a + b, 0) / s.lat.length) : null, active: s.active, queued: s.queue.length, breaker: Date.now() < s.openUntil ? { open: true, why: s.why, until: new Date(s.openUntil).toISOString() } : { open: false } };
+  return { peak: peakInfo(), adapters: out };
 }
 
-module.exports = { guard, stats, looseJson, stripThink, wantsJson };
+module.exports = { peakInfo, guard, stats, looseJson, stripThink, wantsJson };
