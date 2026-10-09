@@ -99,9 +99,16 @@ function nouns(state) {
   if (idm === 'noble') return { doc: '禀帖', from: ['管事', '庄头', '门客'], me: '本府' };
   return { doc: '公文', from: ['司户', '县丞', '典史', '上官札付'], me: '本官' };
 }
+/* 只有真正有官职/职掌的人才会上书、才会被弹劾；主角的妻儿家人不算 */
+function officialsOf(state) {
+  const pn = String((state.protagonist && state.protagonist.name) || '').replace(/[.*+?^${}()|[\]\\]/g, '');
+  const kin = new RegExp(`${pn ? pn + '的?' : '^'}(长|次|幼|嫡|庶|正|继|侧)?(子|女|妻|妾|母|父|兄|弟|姊|妹|侄|孙|婿|媳)|家人|乳母|奴婢|家仆`);
+  return (state.npcs || []).filter(x => x && x.name && x.role && x.status !== '死' && !/已故|死/.test(String(x.status || ''))
+    && !kin.test(String(x.role)) && !kin.test(String(x.tie || '')) && !/主角的(妻|子|女|父|母|兄|弟|家)/.test(String(x.tie || '')) && !x.relation);
+}
 function presenter(state, i) {
   const n = nouns(state);
-  const officials = (state.npcs || []).filter(x => x && x.name && x.role && x.status !== '死' && !/已故|死/.test(String(x.status || '')));
+  const officials = officialsOf(state);
   if (officials.length && rnd(state, 'who' + i) < 0.6) {
     const o = officials[Math.floor(rnd(state, 'whom' + i) * officials.length)];
     return `${o.name}（${o.role}）`;
@@ -208,9 +215,9 @@ const TEMPLATES = [
   },
   {
     id: 'impeach', title: '弹章', weight: 3,
-    when: s => (s.npcs || []).filter(n => n && n.role).length >= 2 && ['emperor', 'official', 'warlord'].includes(s.identityModule),
+    when: s => officialsOf(s).length >= 2 && ['emperor', 'official', 'warlord'].includes(s.identityModule),
     build: (s, e, S, C) => {
-      const ns = (s.npcs || []).filter(n => n && n.role);
+      const ns = officialsOf(s);
       const a = ns[Math.floor(rnd(s, 'imp-a') * ns.length)];
       const b = ns.filter(x => x !== a)[Math.floor(rnd(s, 'imp-b') * (ns.length - 1))];
       return {

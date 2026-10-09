@@ -215,6 +215,16 @@ aside h3 .minibtn{font-weight:400}
 .linklike { color: #1a56db; text-decoration: underline; cursor: pointer; }
 .linklike:hover { color: #123d9e; }
 
+/* 沉浸：正文像书页，对白有色，真人与虚构一眼可分 */
+.scene p{margin:0 0 .9em;text-indent:2em}
+.scene .say{color:#7a3b16}
+.entry .who{border-left:3px solid var(--accent);padding-left:8px}
+.badge.real{background:#e8f0fb;color:#0b4f9c;border:1px solid #b9d0ee}
+.badge.fict{background:#f2f1ee;color:#7d7568;border:1px solid #dcd8d0}
+.list .item.real{border-left:3px solid #6b9bd6}
+.list .item.fict{border-left:3px solid #d8d2c6}
+main{background:linear-gradient(#fbf8f2,#f6f1e8)}
+
 /* 案牍（朝政）：每回合批阅，数字后果摆在明处 */
 .court{border:1px solid var(--accent);border-radius:12px;padding:14px 16px;background:#fffdf8;margin-bottom:16px;max-width:70ch}
 .court-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px}

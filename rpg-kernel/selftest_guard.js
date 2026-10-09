@@ -38,7 +38,7 @@ const ok = (c, m) => { if (c) { pass++; console.log('  PASS ' + m); } else { fai
   await cnt.call({ system: '写正文', prompt: 'z', temperature: 0.9 }, {});
   await cnt.call({ system: '写正文', prompt: 'z', temperature: 0.9 }, {});
   ok(c2 === 3, `抽取类命中缓存、正文类不缓存（实际请求 ${c2} 次）`);
-  ok(stats().fake401.breaker.open === true, '统计里能看到熔断状态');
+  ok(stats().adapters.fake401.breaker.open === true, '统计里能看到熔断状态');
   console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
   process.exit(fail ? 1 : 0);
 })();
