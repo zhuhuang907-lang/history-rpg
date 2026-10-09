@@ -1,0 +1,99 @@
+{
+  "identityModule": "warlord",
+  "protagonist": {
+    "name": "严俊（化名，自称汉扬州刺史严象之玄孙）",
+    "age": 18,
+    "birthYear": 296,
+    "role": "鲁阳县东南陈氏坞坞主，拥众近三百、编三十二什",
+    "disposition": "贪暴；与地方豪强无异，大肆劫掠并掳壮丁编军，不得美化。遇官府或强者来则倾向归附投降，不硬拼"
+  },
+  "clock": {
+    "yearLabel": "建兴元年",
+    "gregorianYear": 313,
+    "month": 9,
+    "day": 26,
+    "season": "秋",
+    "maxAdvancePerTurn": 3
+  },
+  "location": {
+    "full": "荆州 南阳国 鲁阳县城北门外",
+    "polity": "西晋（南阳国）",
+    "controller": "名义属晋；此刻县城主人待定"
+  },
+  "resources": {
+    "部众": "近三百人，编三十二什",
+    "坞": "陈氏坞（鲁阳县东南），仓有粟",
+    "兵器甲仗": "缴县兵与陈氏坞部曲所得，数未清",
+    "附众": "姜崇（老书佐）、甘平（木匠）、屠钧（铁匠）、席远（富户）、祝恒（藏书人）"
+  },
+  "npcs": [
+    {
+      "name": "韩式",
+      "age": 48,
+      "nativePlace": "未登记（需补）",
+      "role": "鲁阳县令",
+      "background": "县城北门外献印投降。此刻生死与职名待玩家决定。",
+      "tie": "已降，未处置",
+      "goal": "活下来，最好保住官身与家眷",
+      "risk": "一旦叶县官军来援，他会是第一个被清算的",
+      "defectionCondition": "只要有任何外部官军靠近，他会立刻翻脸重夺印信",
+      "source": "fictional"
+    },
+    {
+      "name": "屈信",
+      "age": 39,
+      "nativePlace": "南阳国鲁阳县",
+      "role": "鲁阳县主簿，被挟持后留在军中",
+      "background": "本县钱粮与户籍图籍皆经其手，熟本县形势。",
+      "tie": "被挟持，人在军中，心未服",
+      "goal": "保命，并留一条将来能自辩的路",
+      "risk": "县令若死，他将被指从贼",
+      "defectionCondition": "只要他能脱身抵达叶县或襄阳，他会立刻报官并夸大坞中虚实",
+      "source": "fictional"
+    },
+    {
+      "name": "陈焕",
+      "age": 34,
+      "nativePlace": "南阳国鲁阳县",
+      "role": "陈氏坞部曲督",
+      "background": "断木涧一战后逃回陈氏坞，坞主陈恭被诱出歼之，陈焕被押至今。",
+      "tie": "旧坞主的心腹，现为俘囚",
+      "goal": "活命，并保在坞中旧部的地位",
+      "risk": "他是当地熟人，杀他会动摇收降的人心，放他会留反噬的种子",
+      "defectionCondition": "一旦他被释出且官军压境，他会立刻重聚旧部",
+      "source": "fictional"
+    },
+    {
+      "name": "姜崇",
+      "age": 61,
+      "nativePlace": "南阳国",
+      "role": "老书佐，掌坞中文书",
+      "background": "旧为县衙书佐，乱后随流民入寨；识字能算，是坞中唯一能写牒的人。",
+      "tie": "坞中主文翰",
+      "goal": "把坞中的事做得像官府，好给自己留退路",
+      "risk": "他写的每一份文书都是将来被清算的证据",
+      "defectionCondition": "若坞主势衰，他会带图籍投下一个能给他官身的人",
+      "source": "fictional"
+    },
+    {
+      "name": "汪满",
+      "age": 24,
+      "nativePlace": "荆州",
+      "role": "坞主亲随",
+      "background": "自岑氏坞堡一路随主角至此，是少数知根底的人。",
+      "tie": "旧随从，最可信",
+      "goal": "跟着坞主捞到实利",
+      "risk": "他知道主角的出身破绽，是柄双刃利器",
+      "defectionCondition": "除非主角自身难保，否则极难动摇；若被外人拿住把柄则可能反水",
+      "source": "fictional"
+    }
+  ],
+  "threads": [
+    { "id": "t1", "title": "县令韩式的处置（献印之后）", "status": "open", "lastTouchedTurn": 0, "note": "杀、押、用其为傀儡、纵其逃 —— 尚未决定" },
+    { "id": "t2", "title": "叶县官军可能来援", "status": "open", "lastTouchedTurn": 0, "note": "消息未实，斥候未回" },
+    { "id": "t3", "title": "县城仓储与户籍图籍（屈信经手）", "status": "open", "lastTouchedTurn": 0, "note": "入县城后必争之物" },
+    { "id": "t4", "title": "陈焕与旧坞人心的处置", "status": "open", "lastTouchedTurn": 0, "note": "释则留患，杀则失人心" },
+    { "id": "t5", "title": "三十日入籍限牒未销", "status": "open", "lastTouchedTurn": 0, "note": "原牒文限期，日内将届" },
+    { "id": "t6", "title": "秋粮征敛与冬储", "status": "open", "lastTouchedTurn": 0, "note": "近三百张口的冬粮尚无定数" }
+  ]
+}

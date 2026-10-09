@@ -1,0 +1,8 @@
+{
+  "id": "example-local-python",
+  "displayName": "示例：本地 Python 叙事服务",
+  "kind": "http-json",
+  "config": {
+    "url": "http://127.0.0.1:8000/gm"
+  }
+}

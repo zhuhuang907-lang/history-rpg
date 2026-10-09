@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>枢引擎 · 历史模拟</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body class="simple">
+
+<div id="wizard" class="wizard hidden">
+  <div class="wz-box">
+    <div class="wz-steps" id="wzSteps"></div>
+    <h2 id="wzTitle"></h2>
+    <div id="wzBody"></div>
+    <div class="wz-foot">
+      <button id="wzSkip" class="linkbtn">我自己来，跳过</button>
+      <div class="btnrow">
+        <button id="wzPrev">上一步</button>
+        <button id="wzNext" class="primary">下一步</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="top">
+  <div class="brand">枢引擎</div>
+  <div id="statusBar" class="status">还没开局</div>
+  <div class="acts">
+    <select id="saveSel" title="切换存档"><option value="">— 已有存档 —</option></select>
+    <button id="btnSaves" title="管理存档（删除/切换）">存档管理</button>
+    <button id="btnNew" class="primary">＋ 新开局</button>
+    <button id="btnSettings">设置</button>
+    <button id="btnAdvanced" title="显示/隐藏审计、纠错、回滚、核查等开发者面板">高级面板</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <main>
+    <div id="turnDelta" class="deltabox hidden"></div>
+    <div id="logBox" class="log"></div>
+
+    <div id="draftBox" class="draft hidden">
+      <div class="draft-head">本回合草稿 · 还没写进世界（看完再决定要不要采纳）<span id="draftMeta"></span></div>
+      <div id="draftEcho" class="echo"></div>
+      <div id="draftScene" class="scene"></div>
+      <div class="apply">
+        <div class="row">
+          <label>本轮推进时间
+            <select id="advDays" title="每个回合时间必须往前走，剧情才会推进">
+              <option value="1">1 天</option>
+              <option value="3">3 天</option>
+              <option value="10" selected>一旬（10 天）</option>
+              <option value="30">一月</option>
+              <option value="90">一季</option>
+              <option value="180">半年</option>
+              <option value="360">一年</option>
+            </select>
+          </label>
+          <button id="btnAccept" class="primary">采纳并继续</button>
+          <button id="btnRetry">这段不行，重来</button>
+        </div>
+        <div id="advPreview" class="compose-hint"></div>
+        <div id="newNpcBox" class="chips"></div>
+        <div id="threadChips" class="chips"></div>
+      </div>
+    </div>
+
+    <div id="starterCards" class="cards">
+      <div class="cards-head">先挑一个现成的局面，或者点右上「＋ 新开局」自己造一个：</div>
+      <div id="cardList" class="cardlist"></div>
+      <div class="cards-note">选好之后，在下面这个框里写你要做什么 —— 比如「传押司来问账」。不用记命令，写人话就行。</div>
+    </div>
+
+    <div class="compose">
+      <textarea id="input" rows="3" placeholder="写你要做的事。比如：传押司来问账、去城门口看看、把那封信托人送出去。留空则让 GM 先演此刻正在发生的事。"></textarea>
+      <div class="row">
+        <span class="lbl adv">本轮要碰的线索（不选＝禁止 GM 替你推进）：</span>
+        <select id="threadSel" class="adv" multiple size="3"></select>
+        <label class="chk">篇幅
+          <select id="verbosity" title="控制每轮正文长度，太长就读不动">
+            <option value="long" selected>标准（1200~2000 字）</option>
+            <option value="normal">较短（600~1000 字）</option>
+            <option value="short">精简（300~600 字）</option>
+            <option value="nolimit">不限</option>
+          </select>
+        </label>
+        <label class="chk" title="严格：一切史实核对；标准：大事核对、日常可想象；宽松：只守红线，允许架空">史实
+          <select id="factMode">
+            <option value="standard" selected>标准</option>
+            <option value="strict">严格</option>
+            <option value="loose">宽松（部分架空）</option>
+          </select>
+        </label>
+        <label class="chk adv"><input type="checkbox" id="autoVerify"> 自动核查新人物是否撞真人名</label>
+        <label class="chk adv"><input type="checkbox" id="autoFactCheck" checked> 自动核查史实（引擎主动检索并纠错）</label>
+        <label class="chk adv" title="先出一版构思（世界推进、NPC动机、状态变化、信息传播），再照构思写正文。更稳，但多一次调用"><input type="checkbox" id="planFirst" checked> 先想后写（稳定生成）</label>
+        <button id="btnRun" class="primary big">推进回合</button>
+      </div>
+      <div id="flagRow" class="row" style="gap:6px;align-items:center">
+        <span class="lbl">给上一回合打个标记：</span>
+        <button class="minibtn flagbtn" data-flag="好看">好看</button>
+        <button class="minibtn flagbtn" data-flag="出戏">出戏</button>
+        <button class="minibtn flagbtn" data-flag="错史">错史</button>
+        <button class="minibtn flagbtn" data-flag="无聊">无聊</button>
+        <span id="flagMsg" class="muted"></span>
+      </div>
+      <div id="battleHint" class="compose-hint"></div>
+      <div id="warPanel" class="warpanel hidden"></div>
+      <div id="eventBanner" class="evbanner hidden"></div>
+      <div class="compose-hint adv">你的指令会原样送给 AI。生成后草稿顶部会回显「你的指令」和「AI 的理解」——若它听岔了或替你做了事，点「这段不行，重来」。</div>
+    </div>
+  </main>
+
+  <aside>
+    <div class="tabs">
+      <button data-rail="check" class="railtab adv">检查</button>
+      <button data-rail="nano" class="railtab adv">纳米审计</button>
+      <button data-rail="world" class="railtab active">局势</button>
+      <button data-rail="file" class="railtab">人物与线索</button>
+      <button data-rail="map" class="railtab">地图</button>
+      <button data-rail="snap" class="railtab adv">回滚</button>
+      <button data-rail="find" class="railtab adv">核查</button>
+      <button data-rail="archive" class="railtab adv">档案馆</button>
+    </div>
+    <div id="railCheck" class="rail hidden">
+      <div class="railnote">分三层：①机械可查 ②对照表比对 ③只能人判断。必过项不过＝整轮作废。</div>
+      <div id="failBanner" class="failbanner hidden"></div>
+      <div id="auditBox" class="list"><div class="muted">还没跑过回合。</div></div>
+    </div>
+    <div id="railNano" class="rail hidden">
+      <div class="railnote">把这一轮拆成断言、动作、对话行、数字、状态，十遍扫描逐个验。S0＝整轮作废。</div>
+      <div id="nanoSummary" class="kv"></div>
+      <div id="nanoBox" class="list"><div class="muted">还没跑过回合。</div></div>
+      <h3>这一轮的输入对账（P0）</h3>
+      <div id="p0Box" class="list"><div class="muted">还没跑过回合。</div></div>
+      <h3>扫出来的问题（点开看原文与改法）</h3>
+      <div id="nanoIssueBox" class="list"><div class="muted">没有问题。</div></div>
+      <h3>世界扫描 P10–P15（历史 / 资源 / 信息 / NPC / 因果 / 回归）</h3>
+      <div id="worldScanSummary" class="kv"></div>
+      <div id="worldScanBox" class="list"><div class="muted">还没跑过回合。</div></div>
+      <div id="worldScanIssueBox" class="list"><div class="muted">没有问题。</div></div>
+    </div>
+    <div id="railWorld" class="rail">
+      <div class="railnote adv">世界不是一个背景板。24 项状态每轮自行推进；玩家不动，NPC 也在动。</div>
+      <div class="row"><button id="btnWorldRefresh" class="minibtn">刷新</button>
+        <span class="muted" id="worldUpdated"></span></div>
+      <h3 class="adv">世界状态（24 项）</h3>
+      <div id="worldSectionBox" class="kv adv"><div class="muted">载入中…</div></div>
+      <h3>钱粮兵马</h3>
+      <div id="worldEcoBox" class="kv"></div>
+      <h3>人物各自在做什么</h3>
+      <div id="worldAgencyBox" class="kv"></div>
+      <div class="row adv" style="margin-top:6px">
+        <button id="btnNpcDecide" class="minibtn">问一个 NPC：他会怎么反应</button>
+      </div>
+      <div id="npcDecideBox" class="kv adv"></div>
+      <h3 class="adv">谁知道什么（信息四层，第四层不得泄露）</h3>
+      <div id="worldInfoBox" class="kv adv"></div>
+      <h3 class="adv">史实锚点与分歧</h3>
+      <div id="worldDivBox" class="kv adv"></div>
+      <div class="row adv" style="margin-top:6px">
+        <button id="btnAddAnchor" class="minibtn">加一条史实锚点</button>
+        <button id="btnAddCausal" class="minibtn">登记一笔因果</button>
+      </div>
+      <h3>本轮天下发生了什么</h3>
+      <div id="worldChangeBox" class="kv"></div>
+      <h3 class="adv">人物身份核实（长线：每轮重查，不只是开局核一次）</h3>
+      <div class="row adv" style="margin-top:6px">
+        <button id="btnFigureAudit" class="minibtn">重新核实全部人物</button>
+        <span class="muted" id="figureAuditUpdated"></span>
+      </div>
+      <div id="figureAuditBox" class="kv adv"><div class="muted">还没核实过。</div></div>
+      <h3>史事进程（已发生的大事、人物生死）</h3>
+      <div id="figureLogBox" class="kv"><div class="muted">还没有跨年记录。</div></div>
+      <h3>眼下的事</h3>
+      <div class="row" style="margin-top:6px">
+        <button id="btnPlotRefresh" class="minibtn">刷新</button>
+        <button id="btnPlotAudit" class="minibtn adv">看后台日志</button>
+        <span class="muted" id="plotUpdated"></span>
+      </div>
+      <div id="plotSummaryBox" class="kv adv"><div class="muted">载入中…</div></div>
+      <div id="plotVisibleBox" class="list"><div class="muted">载入中…</div></div>
+      <div id="plotAuditBox" class="list hidden"></div>
+    </div>
+    <div id="railSnap" class="rail hidden">
+      <div class="railnote">改最后一句没用——错误在最早那轮就开始污染状态了。这里定位最早错误、列出被污染项、回滚到干净起点。</div>
+      <div class="row"><button id="btnSnapRefresh" class="minibtn">刷新</button>
+        <button id="btnSnapNow" class="minibtn">立即存一份快照</button></div>
+      <h3>最早错误与修复建议</h3>
+      <div id="repairBox" class="kv"><div class="muted">载入中…</div></div>
+      <h3>快照（可回滚）</h3>
+      <div id="snapBox" class="list"><div class="muted">载入中…</div></div>
+      <h3>被这个错误污染到现在的项</h3>
+      <div class="row"><input id="impactCode" class="inp" placeholder="错误码，如 P1-D01" style="flex:1">
+        <button id="btnImpact" class="minibtn">查</button></div>
+      <div id="impactBox" class="kv"></div>
+    </div>
+    <div id="railFile" class="rail hidden">
+      <div class="railnote adv">开新局会自动生成人物与地图。这里可一键刷新。</div>
+      <div class="row adv"><button id="btnReseed" class="minibtn">重新生成世界（人物＋地图）</button>
+        <button id="btnIdentity" class="minibtn">身份转变…</button></div>
+      <h3 class="adv">存档管理</h3>
+      <div class="railnote adv">也可用顶部「存档管理」按钮。这里同样可以删。</div>
+      <div id="saveListBox" class="list adv"><div class="muted">载入中…</div></div>
+      <h3>身份</h3>
+      <div id="identityBox" class="kv"></div>
+      <div id="stateBox" class="kv muted">还没载入存档。</div>
+      <h3 id="hFamily">家 / 家族 <button id="btnFillFamily" class="minibtn">让 AI 拟一份</button></h3>
+      <div id="familyBox" class="kv muted">未登记</div>
+      <h3 id="hGeo">地理 <button id="btnFillGeo" class="minibtn">让 AI 拟一份</button></h3>
+      <div id="geoBox" class="kv muted">未登记</div>
+      <div id="anchorSec" class="adv"><h3>史实锚点（真人模式）</h3>
+      <div id="anchorBox" class="kv muted">当前是虚构人物模式</div></div>
+      <div class="adv"><h3>纠正记录库</h3>
+      <div class="railnote">把你每次指出的问题记在这里，AI 每轮动笔前必须逐条对照。同类错误重复出现会自动升级提示。</div>
+      <div class="row">
+        <select id="corrKey" title="属于哪类失误（用于统计复发）" style="flex:none">
+          <option value="claim_checked">嘴上说检查过、实际没检查</option>
+          <option value="missed_ripple">改一处、漏掉牵动的其他处</option>
+          <option value="silent_action">悄悄替我收尾/替我决定</option>
+          <option value="time_leap">一轮跳太远</option>
+          <option value="number_drift">数字忽大忽小</option>
+          <option value="placeholder">次要人物用占位符</option>
+          <option value="relation_drift">关系/年龄写错</option>
+          <option value="summary_style">写成摘要而不是场景</option>
+          <option value="modern_terms">用了后世词汇/现代观念</option>
+          <option value="omniscient">未卜先知/上帝视角</option>
+          <option value="dead_revive">死人复活/人物无故消失</option>
+        </select>
+      </div>
+      <div class="row"><input id="corrText" placeholder="这次它错在哪？" style="flex:1">
+        <button id="btnCorr" class="minibtn">记下</button></div>
+      <div id="corrBox" class="list"><div class="muted">还没有纠正记录。</div></div></div>
+      <div class="row" style="margin-top:6px">
+        <button id="btnRecap" class="minibtn">前情回顾</button>
+        <button id="btnCard" class="minibtn">档案卡</button>
+        <button id="btnSheet" class="minibtn">速查表</button>
+        <button id="btnRoster" class="minibtn">人物表</button>
+        <button id="btnStats" class="minibtn">统计</button>
+      </div>
+      <h3>线索</h3>
+      <div id="threadBox" class="list"></div>
+      <h3 class="adv">天降之事（本局事件史）</h3>
+      <div id="eventLogBox" class="list adv"><div class="muted">还没有突发事件。这类事出现率低（每回合约 8%）。</div></div>
+      <h3>战况（本局战斗记录）</h3>
+      <div id="battleLogBox" class="list"><div class="muted">还没有战斗。</div></div>
+      <h3 id="hNpc">人物</h3>
+      <div id="npcBox" class="list"></div>
+      <div id="factionSec"><h3 id="hFaction">派系 / 内斗</h3>
+      <div id="factionBox" class="list"><div class="muted">未生成</div></div></div>
+    </div>
+    <div id="railFind" class="rail hidden">
+      <div id="searchState" class="railnote">检索后端：载入中</div>
+      <div class="row">
+        <button id="btnSearchCfg" class="minibtn">换检索源 / 测连通</button>
+        <button id="btnPlace">核查当前地点</button>
+        <button id="btnTerm">核查一个词</button>
+      </div>
+      <h3>核查记录</h3>
+      <div id="verifyBox" class="list"><div class="muted">还没核查。</div></div>
+    </div>
+    <div id="railMap" class="rail hidden">
+      <div class="railnote">下列为<b>维基共享资源里的真实历史地图</b>（当时的疆域/舆图原图，非引擎绘制）。点标题看原图与出处。</div>
+      <div id="mapBox" class="mapwrap"><div class="muted">还没地图。开新局会自动检索该年代的真实地图。</div></div>
+      <div id="mapDetail" class="railnote"></div>
+      <div id="mapSources" class="railnote"></div>
+      <div id="territorySec">
+      <h3>地盘 / 势力</h3>
+      <div class="railnote">引擎记住的势力控制，随战事更新（GM 用 CLAIM 登记后永久保留）。</div>
+      <div id="territoryBox" class="kv"><div class="muted">还没登记</div></div>
+      </div>
+    </div>
+    <div id="railArchive" class="rail hidden">
+      <div class="railnote">本局历史底盘，按 身份 / 时代 / 地理 差异化提供，每项标注<b>来源</b>与<b>可信度</b>。标「离线/维基」= 已核实史实；标「估计/生成」= 谨慎对待；标「规则包」= 框架内置（成员须依史实指认）。</div>
+      <div class="row"><button id="btnArchiveRefresh" class="minibtn">刷新</button></div>
+      <div id="archiveBox" class="list"><div class="muted">载入中…</div></div>
+    </div>
+  </aside>
+</div>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-body">
+    <h3 id="modalTitle">配置</h3>
+    <div id="modalContent"></div>
+    <div class="btnrow right">
+      <button id="modalClose">关闭</button>
+      <button id="modalOk" class="primary">确定</button>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

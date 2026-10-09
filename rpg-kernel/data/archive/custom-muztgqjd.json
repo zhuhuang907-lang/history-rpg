@@ -1,0 +1,148 @@
+{
+  "identity": "commoner",
+  "eraLabel": "（年号待定）",
+  "gregorianYear": 876,
+  "polity": "（未核实）",
+  "place": "长安",
+  "ruler": null,
+  "eraEvents": [],
+  "factions": [
+    {
+      "value": {
+        "title": "宰相朝臣 对 宦官中尉",
+        "stake": "相权与宦权相轧，北司与南衙对峙",
+        "sideA": "宰相朝臣",
+        "sideB": "宦官中尉",
+        "membersA": [],
+        "membersB": [],
+        "provisional": true
+      },
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "按朝代党争框架生成，成员须依史实指认，引擎不随机塞人"
+    },
+    {
+      "value": {
+        "title": "藩镇悍将 对 中央文臣",
+        "stake": "藩镇跋扈与朝廷削藩之争",
+        "sideA": "藩镇悍将",
+        "sideB": "中央文臣",
+        "membersA": [],
+        "membersB": [],
+        "provisional": true
+      },
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "按朝代党争框架生成，成员须依史实指认，引擎不随机塞人"
+    },
+    {
+      "value": {
+        "title": "进士清流 对 门荫世家",
+        "stake": "科第与门第之争，牛李党争余绪",
+        "sideA": "进士清流",
+        "sideB": "门荫世家",
+        "membersA": [],
+        "membersB": [],
+        "provisional": true
+      },
+      "source": "rulepack",
+      "confidence": "medium",
+      "note": "按朝代党争框架生成，成员须依史实指认，引擎不随机塞人"
+    }
+  ],
+  "numericCeiling": {
+    "value": "=== 数字量级（动笔前先算，超出即算错） ===\n本局时代的参考上限（已按时代折算，x0.7）：一县户数 ≤ 42,000；一郡户数 ≤ 350,000；全国户数 ≤ 16,800,000；\n一县兵 ≤ 4,200；一郡兵 ≤ 28,000；一州兵 ≤ 140,000；一坞堡 ≤ 5,600；单处粮储 ≤ 3,500,000 石。\n写具体数目之前，先想清楚：这是哪一级（县/郡/州/国）？该级通常多少？再落笔。数字一旦被玩家订正，**旧数字全部作废，此后不得再用**。",
+    "source": "rulepack",
+    "confidence": "medium",
+    "note": "按行政级别与本局时代折算的量级上限（先算再写）"
+  },
+  "eraVocab": [
+    {
+      "modern": "人权",
+      "ancient": "「性命」「本分」——古代无此观念；古人所争是名分、活路、公道",
+      "cat": "观念"
+    },
+    {
+      "modern": "权利",
+      "ancient": "名分、该得的份例",
+      "cat": "观念"
+    },
+    {
+      "modern": "自由",
+      "ancient": "自在、不受拘管（且古人视之为难得，非天经地义）",
+      "cat": "观念"
+    },
+    {
+      "modern": "民主",
+      "ancient": "众议、公推、乡论（绝非人人有份的政体）",
+      "cat": "观念"
+    },
+    {
+      "modern": "平等",
+      "ancient": "古人讲「一视同仁」是德，不认「人人平等」是理；等级是天经地义",
+      "cat": "观念"
+    },
+    {
+      "modern": "人权平等",
+      "ancient": "无此观念；须按等级、良贱、主仆之别写",
+      "cat": "观念"
+    },
+    {
+      "modern": "法治",
+      "ancient": "王法、律令（法自君出，非约束君权）",
+      "cat": "观念"
+    },
+    {
+      "modern": "隐私",
+      "ancient": "无此概念；家事、私事在宗族与邻里间本就无所遁形",
+      "cat": "观念"
+    }
+  ],
+  "geography": {
+    "value": {
+      "地形": "关中有函谷关、陇蜀的沃野千里，南边有巴蜀的富庶，北边有胡人畜牧的便利，可以在三面防守，并向东方牵制诸侯，只要握住渭水通运京师，当东方有变，就可以顺流而下",
+      "水系": "渭水",
+      "道路驿站": "不详",
+      "物产": "陇蜀的沃野千里，南边有巴蜀的富庶，北边有胡人畜牧的便利",
+      "常发灾异": "不详",
+      "note": "地理由真实检索生成；未查到的字段为「不详」，不编造。",
+      "source": "zh.wikipedia.org/长安（条目真实正文）",
+      "eraName": "长安",
+      "real": true
+    },
+    "source": "wikidata",
+    "confidence": "high",
+    "note": "真实地理检索，未查到的字段为「不详」，不编造"
+  },
+  "persons": [
+    {
+      "value": {
+        "name": "徐温",
+        "role": "淮南节度使杨行密部将",
+        "age": 15,
+        "nativePlace": "",
+        "born": 862,
+        "died": 927,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    },
+    {
+      "value": {
+        "name": "杨行密",
+        "role": "淮南节度使",
+        "age": 25,
+        "nativePlace": "",
+        "born": 852,
+        "died": 905,
+        "qid": ""
+      },
+      "source": "wikidata",
+      "confidence": "high",
+      "note": "Wikidata 真实同代人物"
+    }
+  ],
+  "generatedAt": "2026-10-08T17:37:32.159Z"
+}
